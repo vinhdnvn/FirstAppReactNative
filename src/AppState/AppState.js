@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AppNavigation from "../AppNavigation/AppNavigation";
 import AppLoading from "expo-app-loading";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   useFonts,
   FredokaOne_400Regular,
@@ -10,66 +11,20 @@ import {
   OpenSans_700Bold,
 } from "@expo-google-fonts/dev";
 export default function AppState() {
-  const [allNotes, setAllNotes] = useState([
-    {
-      noteID: 1,
-      noteTitle: "First Idea",
-      noteText: "This is my first startup idea",
-    },
-    {
-      noteID: 2,
-      noteTitle: "Second Idea",
-      noteText:
-        "Xin chào mọi người tôi tên là Nguyễn Văn Thành Vinh năm nay tôi là sinh viên năm 2 trường Đại học Công Nghệ Thongo Tin và Truyền thông thành phố Đà Nẵng",
-    },
-    {
-      noteID: 2,
-      noteTitle: "Second Idea",
-      noteText: "This is my second Idea",
-    },
-    {
-      noteID: 2,
-      noteTitle: "Second Idea",
-      noteText: "This is my second Idea",
-    },
-    {
-      noteID: 2,
-      noteTitle: "Second Idea",
-      noteText: "This is my second Idea",
-    },
-    {
-      noteID: 2,
-      noteTitle: "Second Idea",
-      noteText: "This is my second Idea",
-    },
-    {
-      noteID: 2,
-      noteTitle: "Second Idea",
-      noteText: "This is my second Idea",
-    },
-    {
-      noteID: 2,
-      noteTitle: "Second Idea",
-      noteText: "This is my second Idea",
-    },
-    {
-      noteID: 2,
-      noteTitle: "Second Idea",
-      noteText: "This is my second Idea",
-    },
-    {
-      noteID: 2,
-      noteTitle: "Second Idea",
-      noteText: "This is my second Idea",
-    },
-  ]);
+  const [noteId, setNoteId] = useState(0);
+  const [allNotes, setAllNotes] = useState([]);
   const [note, setNote] = useState({});
+  const [choosenNoteId, setchoosenNoteId] = useState(0);
 
   const AppState = {
+    noteId,
+    setNoteId,
     allNotes,
     setAllNotes,
     note,
     setNote,
+    choosenNoteId,
+    setchoosenNoteId,
   };
   const [fontsLoaded] = useFonts({
     FredokaOne_400Regular,
@@ -78,6 +33,31 @@ export default function AppState() {
     OpenSans_600SemiBold,
     OpenSans_700Bold,
   });
+
+  useEffect(() => {
+    try {
+      const localNoteId = async () => {
+        const localNoteIdMain = await AsyncStorage.getItem("@noteId");
+        console.log("localNoteId: ", localNoteIdMain);
+        if (localNoteIdMain !== null) {
+          setNoteId(Number(localNoteIdMain));
+        } else {
+          await AsyncStorage.setItem("@noteId", "0");
+        }
+      };
+      localNoteId();
+      const localNotes = async () => {
+        const localNotesMain = await AsyncStorage.getItem("@notes");
+        console.log("localNotes: ", localNotesMain);
+        if (localNotesMain !== null) {
+          setAllNotes(JSON.parse(localNotesMain));
+        }
+      };
+      localNotes();
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
 
   if (!fontsLoaded) {
     return <AppLoading />;

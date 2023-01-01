@@ -54,5 +54,6 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "FredokaOne_400Regular",
     fontSize: 25,
+    color: "#519872",
   },
 });

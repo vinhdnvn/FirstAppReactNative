@@ -13,7 +13,9 @@ import GlobalHeader from "../../Headers/GlobalHeader";
 
 export default function AllNotes({ navigation, AppState }) {
   const { allNotes, setNote } = AppState;
-
+  useEffect(() => {
+    console.log("useEffect triggered");
+  });
   const handlePress = (element) => {
     setNote(element);
     navigation.navigate("Note");
